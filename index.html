@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Ruhi ❤️</title>
+
+<style>
+body{
+    margin:0;
+    background:#000;
+    color:white;
+    font-family: Arial, sans-serif;
+    overflow:hidden;
+    text-align:center;
+}
+
+/* START SCREEN */
+#start{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:26px;
+    cursor:pointer;
+    text-shadow:0 0 15px #ff2e63;
+}
+
+/* PIXEL HEART */
+#heartContainer{
+    display:none;
+    height:100vh;
+    justify-content:center;
+    align-items:center;
+}
+
+.heart{
+    display:grid;
+    grid-template-columns: repeat(8, 22px);
+    grid-gap:4px;
+}
+
+.pixel{
+    width:22px;
+    height:22px;
+    background:red;
+    animation:glow 1s infinite alternate;
+}
+
+@keyframes glow{
+    from{box-shadow:0 0 5px red;}
+    to{box-shadow:0 0 20px red;}
+}
+
+/* DISTANCE SECTION */
+#mapSection{
+    display:none;
+    height:100vh;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(90deg,#000,#12001f);
+}
+
+#distanceText{
+    font-size:20px;
+    margin-bottom:20px;
+    text-shadow:0 0 10px #00ffff;
+}
+
+#distanceLine{
+    width:80%;
+    height:4px;
+    background:#222;
+    position:relative;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+#traveler{
+    position:absolute;
+    font-size:28px;
+    left:0;
+    top:-15px;
+    transition: all 3s linear;
+}
+
+#cityLabels{
+    width:80%;
+    display:flex;
+    justify-content:space-between;
+    margin-top:10px;
+}
+
+/* MOBILE VERSION */
+@media(max-width:768px){
+
+    #distanceLine{
+        width:4px;
+        height:60vh;
+    }
+
+    #traveler{
+        left:-12px;
+        top:0;
+    }
+
+    #cityLabels{
+        flex-direction:column;
+        align-items:center;
+        gap:40vh;
+    }
+}
+
+/* POPUP */
+#popup{
+    display:none;
+    background:white;
+    color:black;
+    padding:20px;
+    border-radius:15px;
+    width:90%;
+    max-width:350px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+#popup img{
+    width:100%;
+    border-radius:12px;
+    margin:10px 0;
+}
+
+/* FIREWORKS */
+.firework{
+    position:fixed;
+    width:4px;
+    height:4px;
+    background:yellow;
+    border-radius:50%;
+    animation:explode 1s ease-out forwards;
+}
+
+@keyframes explode{
+    to{
+        transform:translate(var(--x),var(--y));
+        opacity:0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="start">Tap Here Ruhi 💖</div>
+
+<div id="heartContainer">
+    <div class="heart" id="heart"></div>
+</div>
+
+<div id="mapSection">
+    <div id="distanceText"></div>
+
+    <div id="distanceLine">
+        <div id="traveler">✈️</div>
+    </div>
+
+    <div id="cityLabels">
+        <span>Kolkata</span>
+        <span>Balasore</span>
+    </div>
+</div>
+
+<div id="popup">
+    <h2>Happy Birthday Ruhi 🎂❤️</h2>
+    <img src="photo.jpg">
+    <p id="message"></p>
+</div>
+
+<audio id="bgMusic" src="music.mp3" loop></audio>
+
+<script>
+
+/* PIXEL HEART PATTERN */
+const pattern=[
+0,1,1,0,0,1,1,0,
+1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,
+0,1,1,1,1,1,1,0,
+0,0,1,1,1,1,0,0,
+0,0,0,1,1,0,0,0
+];
+
+const heartDiv=document.getElementById("heart");
+pattern.forEach(p=>{
+    let d=document.createElement("div");
+    if(p===1)d.className="pixel";
+    heartDiv.appendChild(d);
+});
+
+/* DISTANCE CALCULATION */
+function calculateDistance(){
+    const lat1=22.5726, lon1=88.3639;
+    const lat2=21.4942, lon2=86.9316;
+    const R=6371;
+    const dLat=(lat2-lat1)*Math.PI/180;
+    const dLon=(lon2-lon1)*Math.PI/180;
+
+    const a=Math.sin(dLat/2)**2 +
+    Math.cos(lat1*Math.PI/180)*
+    Math.cos(lat2*Math.PI/180)*
+    Math.sin(dLon/2)**2;
+
+    const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+    return (R*c).toFixed(0);
+}
+
+/* ANIMATE DISTANCE */
+function animateDistance(){
+    const traveler=document.getElementById("traveler");
+    const isMobile=window.innerWidth<=768;
+
+    if(isMobile){
+        traveler.style.top="55vh";
+    }else{
+        traveler.style.left="75%";
+    }
+}
+
+/* FIREWORKS */
+function fireworks(){
+    for(let i=0;i<30;i++){
+        let f=document.createElement("div");
+        f.className="firework";
+        f.style.left="50%";
+        f.style.top="50%";
+        f.style.setProperty('--x',(Math.random()*400-200)+'px');
+        f.style.setProperty('--y',(Math.random()*400-200)+'px');
+        document.body.appendChild(f);
+        setTimeout(()=>f.remove(),1000);
+    }
+}
+
+/* TYPEWRITER */
+const text="From Kolkata to Balasore, around "+calculateDistance()+" kilometers… but you are always zero distance from my heart. ❤️";
+
+function typeWriter(){
+    let i=0;
+    function typing(){
+        if(i<text.length){
+            document.getElementById("message").innerHTML+=text.charAt(i);
+            i++;
+            setTimeout(typing,40);
+        }
+    }
+    typing();
+}
+
+/* CLICK FLOW */
+document.getElementById("start").addEventListener("click",function(){
+
+    document.getElementById("bgMusic").play();
+    this.style.display="none";
+    document.getElementById("heartContainer").style.display="flex";
+
+    setTimeout(()=>{
+        document.getElementById("heartContainer").style.display="none";
+        document.getElementById("mapSection").style.display="flex";
+        document.getElementById("distanceText").innerText=
+        "Distance: "+calculateDistance()+" km ❤️";
+        animateDistance();
+    },2500);
+
+    setTimeout(()=>{
+        document.getElementById("popup").style.display="block";
+        typeWriter();
+        fireworks();
+    },5500);
+
+},{once:true});
+
+</script>
+
+</body>
+</html>
