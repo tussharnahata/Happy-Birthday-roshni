@@ -120,7 +120,9 @@ body{
     border-radius:15px;
     width:90%;
     max-width:350px;
-    position:absolute;
+    max-height:80vh;          /* prevents overflow */
+    overflow-y:auto;          /* allows scroll if needed */
+    position:fixed;           /* better for mobile */
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
@@ -283,4 +285,5 @@ document.getElementById("start").addEventListener("click",function(){
 </script>
 
 </body>
+
 </html>
